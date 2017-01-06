@@ -1,6 +1,6 @@
 //This is the service worker with the combined offline experience (Offline page + Offline copy of pages)
 
-//add this below content to your HTML page, or add the js file to yoru page at the very top to register sercie worker
+//Add this below content to your HTML page, or add the js file to your page at the very top to register sercie worker
 if (navigator.serviceWorker.controller) {
   console.log('[Manifoldjs] active service worker found, no need to register')
 } else {
