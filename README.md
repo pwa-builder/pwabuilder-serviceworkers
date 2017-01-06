@@ -1,6 +1,6 @@
 # Service Workers
 
-In this repository you will find sample code of service workers that implements following scenarios:
+In this repository you will find sample code of service workers implementing the following features:
 
 - Offline page (location: **/ServiceWorker1** folder)
 - Offline copy of pages (location: **/ServiceWorker2** folder)
