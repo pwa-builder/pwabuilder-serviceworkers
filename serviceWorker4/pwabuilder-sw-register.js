@@ -1,14 +1,14 @@
-//This is the "Offline copy of pages" service worker
+//This is the service worker with the Cache-first network
 
 //Add this below content to your HTML page, or add the js file to your page at the very top to register service worker
 if (navigator.serviceWorker.controller) {
-  console.log('[Manifoldjs] active service worker found, no need to register')
+  console.log('[PWA Builder] active service worker found, no need to register')
 } else {
-  //Register the ServiceWorker
-  navigator.serviceWorker.register('manifoldjs-sw.js', {
+
+//Register the ServiceWorker
+  navigator.serviceWorker.register('pwabuilder-sw.js', {
     scope: './'
   }).then(function(reg) {
     console.log('Service worker has been registered for scope:'+ reg.scope);
   });
 }
-
