@@ -4,6 +4,4 @@ In this repository you will find sample code of service workers implementing the
 
 - Offline page (location: **/ServiceWorker1** folder)
 - Offline copy of pages (location: **/ServiceWorker2** folder)
-- Offline copy with Backup offline page (location: **/ServiceWorker3** folder)
-- Cache-first network (location: **/ServiceWorker4** folder)
-- Advanced Pre-cache (location: **/ServiceWorker5** folder)
+- Combination of offline page + offline copy of pages (location: **/ServiceWorker3** folder)
