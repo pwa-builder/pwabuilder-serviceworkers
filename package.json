@@ -1,0 +1,33 @@
+{
+  "name": "pwabuilder-serviceworkers",
+  "version": "1.0.1",
+  "description": "PWA Builder Core Library",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pwa-builder/serviceworkers.git"
+  },
+  "author": {
+    "name": "TBD",
+    "email": "TBD",
+    "url": "TBD"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/pwa-builder/serviceworkers/blob/master/LICENSE.txt"
+    }
+  ],
+  "keywords": [
+    "convert manifest",
+    "manifest",
+    "W3C",
+    "Manifold",
+    "ManifoldJS",
+    "PWABuilder"
+  ],
+  "bugs": {
+    "url": "https://github.com/pwa-builder/serviceworkers//issues"
+  },
+  "homepage": "https://github.com/pwa-builder/serviceworkers/"
+}
