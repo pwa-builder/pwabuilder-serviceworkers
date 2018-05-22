@@ -12,6 +12,14 @@ function getAssetsFolders(ids) {
   return results;
 }
 
+function getServiceWorkersDescription() {
+ 
+  var result = path.resolve(__dirname, 'serviceworkers.json');
+
+  return result;
+}
+
 module.exports = {
-  getAssetsFolders: getAssetsFolders
+  getAssetsFolders: getAssetsFolders,
+  getServiceWorkersDescription: getServiceWorkersDescription
 };
