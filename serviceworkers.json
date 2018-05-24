@@ -22,6 +22,7 @@
     },
     {
       "id": 5,
+      "disable": true,
       "description": "Use this service worker to improve the performance of your app, and make it work offline. The advanced pre-cache allows you to configure files and routes that are cached in different manners (pre-cache, server first, cache first etc). The tool can be used to build a lightening fast app (even for dynamic content) that works offline.",
       "title": "Advanced Pre-cache"
     }
