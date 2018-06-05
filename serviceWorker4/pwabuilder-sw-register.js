@@ -9,6 +9,6 @@ if (navigator.serviceWorker.controller) {
   navigator.serviceWorker.register('pwabuilder-sw.js', {
     scope: './'
   }).then(function(reg) {
-    console.log('Service worker has been registered for scope:'+ reg.scope);
+    console.log('[PWA Builder] Service worker has been registered for scope:'+ reg.scope);
   });
 }
