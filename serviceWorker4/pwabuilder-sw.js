@@ -7,25 +7,22 @@ var precacheFiles = [
 
 //Install stage sets up the cache-array to configure pre-cache content
 self.addEventListener('install', function(evt) {
-  console.log('The service worker is being installed.');
+  console.log('[PWA Builder] The service worker is being installed.');
   evt.waitUntil(precache().then(function() {
-    console.log('[ServiceWorker] Skip waiting on install');
-      return self.skipWaiting();
-
-  })
-  );
+    console.log('[PWA Builder] Skip waiting on install');
+    return self.skipWaiting();
+  }));
 });
 
 
 //allow sw to control of current page
 self.addEventListener('activate', function(event) {
-console.log('[ServiceWorker] Claiming clients for current page');
-      return self.clients.claim();
-
+  console.log('[PWA Builder] Claiming clients for current page');
+  return self.clients.claim();
 });
 
 self.addEventListener('fetch', function(evt) {
-  console.log('The service worker is serving the asset.'+ evt.request.url);
+  console.log('[PWA Builder] The service worker is serving the asset.'+ evt.request.url);
   evt.respondWith(fromCache(evt.request).catch(fromServer(evt.request)));
   evt.waitUntil(update(evt.request));
 });
@@ -37,7 +34,6 @@ function precache() {
   });
 }
 
-
 function fromCache(request) {
   //we pull files from the cache first thing so we can show them fast
   return caches.open(CACHE).then(function (cache) {
@@ -46,7 +42,6 @@ function fromCache(request) {
     });
   });
 }
-
 
 function update(request) {
   //this is where we call the server to get the newest version of the 
@@ -60,5 +55,5 @@ function update(request) {
 
 function fromServer(request){
   //this is the fallback if it is not in the cache to go to the server and get it
-return fetch(request).then(function(response){ return response})
+  return fetch(request).then(function(response){ return response});
 }
