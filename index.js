@@ -13,7 +13,6 @@ function getAssetsFolders(ids) {
 }
 
 function getServiceWorkersDescription() {
- 
   var result = path.resolve(__dirname, 'serviceworkers.json');
 
   return result;
