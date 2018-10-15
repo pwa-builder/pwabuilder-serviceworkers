@@ -9,7 +9,8 @@ self.addEventListener('install', function(event) {
         console.log('[PWA Builder] Cached offline page during install ' + response.url);
         return cache.put(offlinePage, response);
       });
-  }));
+    })
+  );
 });
 
 //If any fetch fails, it will show the offline page.
@@ -17,12 +18,12 @@ self.addEventListener('install', function(event) {
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     fetch(event.request).catch(function(error) {
-      console.error( '[PWA Builder] Network request Failed. Serving offline page. ' + error );
+      console.error('[PWA Builder] Network request Failed. Serving offline page ' + error);
       return caches.open('pwabuilder-offline').then(function(cache) {
         return cache.match('offline.html');
       });
-    }
-  ));
+    })
+  );
 });
 
 //This is an event that can be fired from your page to tell the SW to update the offline page
