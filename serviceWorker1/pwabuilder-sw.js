@@ -6,7 +6,7 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     fetch(offlinePage).then(function(response) {
       return caches.open('pwabuilder-offline').then(function(cache) {
-        console.log('[PWA Builder] Cached offline page during Install' + response.url);
+        console.log('[PWA Builder] Cached offline page during install ' + response.url);
         return cache.put(offlinePage, response);
       });
     })
