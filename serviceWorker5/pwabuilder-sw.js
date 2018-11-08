@@ -1,6 +1,7 @@
 const CACHE = 'pwabuilder-precache';
 const precacheFiles = [
- ];
+    /* Add an array of files to precache for your app */
+];
 
 self.addEventListener('install', function(evt) {
   console.log('The service worker is being installed.');
