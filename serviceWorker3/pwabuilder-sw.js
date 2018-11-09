@@ -48,7 +48,7 @@ var returnFromCache = function(request){
      if(!matching || matching.status == 404) {
        return cache.match('offline.html');
      } else {
-       return matching;
+       return matching
      }
     });
   });
