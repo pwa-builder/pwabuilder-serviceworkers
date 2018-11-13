@@ -4,7 +4,7 @@ var cacheName = 'pwabuilder-offline';
 
 //Install stage sets up the index page (home page) in the cache and opens a new cache
 self.addEventListener('install', function(event) {
-  var indexPage = new Request('index.html');
+  const indexPage = new Request('index.html');
   console.log('[PWA Builder] Install');
   event.waitUntil(
     fetch(indexPage).then(function(response) {
@@ -19,7 +19,9 @@ self.addEventListener('install', function(event) {
 
 //If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener('fetch', function(event) {
-  var updateCache = function(request){
+  const updateCache = function(request){
+    return caches.open('pwabuilder-offline').then(function (cache) {
+  let updateCache = function(request){
     return caches.open(cacheName).then(function (cache) {
       return fetch(request.clone()).then(function (response) {
         console.log('[PWA Builder] add page to offline cache: ' + response.url)
@@ -39,7 +41,7 @@ self.addEventListener('fetch', function(event) {
       //If not in the cache, then return error page
       return caches.open(cacheName).then(function(cache) {
         return cache.match(event.request).then(function(matching) {
-          var report =  !matching || matching.status == 404?Promise.reject('no-match'): matching;
+          let report =  !matching || matching.status == 404?Promise.reject('no-match'): matching;
           return report
         });
       });

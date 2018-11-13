@@ -5,7 +5,7 @@ self.addEventListener('install', function(event) {
   event.waitUntil(preLoad());
 });
 
-var preLoad = function(){
+const preLoad = function(){
   console.log('[PWA Builder] Install Event processing');
   return caches.open('pwabuilder-offline').then(function(cache) {
     console.log('[PWA Builder] Cached index and offline page during install');
@@ -21,7 +21,7 @@ self.addEventListener('fetch', function(event) {
   event.waitUntil(addToCache(event.request));
 });
 
-var checkResponse = function(request){
+const checkResponse = function(request){
   return new Promise(function(fulfill, reject) {
     fetch(request).then(function(response){
       if(response.status !== 404) {
@@ -33,7 +33,7 @@ var checkResponse = function(request){
   });
 };
 
-var addToCache = function(request){
+const addToCache = function(request){
   return caches.open('pwabuilder-offline').then(function (cache) {
     return fetch(request).then(function (response) {
       console.log('[PWA Builder] add page to offline cache: ' + response.url)
@@ -42,7 +42,7 @@ var addToCache = function(request){
   });
 };
 
-var returnFromCache = function(request){
+const returnFromCache = function(request){
   return caches.open('pwabuilder-offline').then(function (cache) {
     return cache.match(request).then(function (matching) {
      if(!matching || matching.status == 404) {
