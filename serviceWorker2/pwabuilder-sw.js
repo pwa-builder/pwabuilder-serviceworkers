@@ -24,7 +24,7 @@ self.addEventListener('fetch', function(event) {
   let updateCache = function(request){
     return caches.open(cacheName).then(function (cache) {
       return fetch(request.clone()).then(function (response) {
-        console.log('[PWA Builder] add page to offline cache: ' + response.url)
+        console.log('[PWA Builder] add page to offline cache: ' + response.url);
         return cache.put(request, response);
       });
     });
