@@ -27,35 +27,34 @@ self.addEventListener("activate", function (event) {
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
-  fromCache(event.request).then(
-    function (response) {
-      // The response was found in the cache so we responde with it and update the entry
-      event.respondWith(response);
+  event.respondWith(
+    fromCache(event.request).then(
+      function (response) {
+        // The response was found in the cache so we responde with it and update the entry
 
-      // This is where we call the server to get the newest version of the
-      // file to use the next time we show view
-      event.waitUntil(
-        fetch(event.request).then(function (response) {
-          updateCache(event.request, response);
-        })
-      );
-    },
-    function () {
-      // The response was not found in the cache so we look for it on the server
-      fetch(event.request)
-        .then(function (response) {
-          event.respondWith(response.clone());
+        // This is where we call the server to get the newest version of the
+        // file to use the next time we show view
+        event.waitUntil(fetch(event.request).then(function (response) {
+          return updateCache(event.request, response);
+        }));
 
-          // If request was success, add or update it in the cache
-          event.waitUntil(function (response) {
-            updateCache(event.request, response);
+        return response;
+      },
+      function () {
+        // The response was not found in the cache so we look for it on the server
+        return fetch(event.request)
+          .then(function (response) {
+            // If request was success, add or update it in the cache
+            event.waitUntil(updateCache(event.request, response.clone()));
+
+            return response;
+          })
+          .catch(function (error) {
+            console.log("[PWA Builder] Network request failed and no cache." + error);
+            return Promise.reject("no-match");
           });
-        })
-        .catch(function (error) {
-          console.log("[PWA Builder] Network request failed and no cache." + error);
-          return Promise.reject("no-match");
-        });
-    }
+      }
+    )
   );
 });
 
