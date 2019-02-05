@@ -4,6 +4,8 @@ const CACHE = "pwabuilder-offline";
 
 // Install stage sets up the index page (home page) in the cache and opens a new cache
 self.addEventListener("install", function (event) {
+  console.log("[PWA Builder] Install Event processing");
+  
   const indexPage = new Request("index.html");
   event.waitUntil(
     fetch(indexPage).then(function (response) {
@@ -42,7 +44,7 @@ function fromCache(request) {
     cache.match(event.request).then(function (matching) {
       return !matching || matching.status == 404
         ? Promise.reject("no-match")
-        : matching;;
+        : matching;
     });
   });
 }
