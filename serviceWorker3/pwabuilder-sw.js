@@ -7,10 +7,12 @@ const offlinePage = "offline.html";
 self.addEventListener("install", function (event) {
   console.log("[PWA Builder] Install Event processing");
 
-  event.waitUntil(caches.open(CACHE).then(function (cache) {
-    console.log("[PWA Builder] Cached offline page during install");
-    return cache.add(offlinePage);
-  }));
+  event.waitUntil(
+    caches.open(CACHE).then(function (cache) {
+      console.log("[PWA Builder] Cached offline page during install");
+      return cache.add(offlinePage);
+    })
+  );
 });
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
@@ -29,7 +31,7 @@ self.addEventListener("fetch", function (event) {
         console.log("[PWA Builder] Network request Failed. Serving content from cache: " + error);
         return fromCache(event.request);
       })
-  )
+  );
 });
 
 function fromCache(request) {
@@ -37,7 +39,7 @@ function fromCache(request) {
   // Return response
   // If not in the cache, then return the offline page
   return caches.open(CACHE).then(function (cache) {
-    cache.match(event.request).then(function (matching) {
+    cache.match(request).then(function (matching) {
       return !matching || matching.status == 404
         ? cache.match(offlinePage)
         : matching;
