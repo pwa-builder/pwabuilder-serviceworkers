@@ -18,28 +18,35 @@ self.addEventListener("install", function (event) {
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
   event.respondWith(
-    caches.open(CACHE).then(function (cache) {
-      fetch(event.request)
-        .then(function (response) {
-          console.log("[PWA Builder] add page to offline cache: " + response.url);
+    fetch(event.request)
+      .then(function (response) {
+        console.log("[PWA Builder] add page to offline cache: " + response.url);
 
-          // If request was success, add or update it in the cache
-          return cache.put(request, response);
-        })
-        .catch(function (error) {
-          console.log("[PWA Builder] Network request Failed. Serving content from cache: " + error);
+        // If request was success, add or update it in the cache
+        const responseClone = response.clone();
+        event.waitUntil(
+          caches.open(CACHE).then(function (cache) {
+            return cache.put(request, responseClone);
+          })
+        );
+        
+        return response;
+      })
+      .catch(function (error) {
+        console.log("[PWA Builder] Network request Failed. Serving content from cache: " + error);
 
-          // Check to see if you have it in the cache
-          // Return response
-          // If not in the cache, then return error page
-          return cache.match(event.request).then(function (matching) {
+        // Check to see if you have it in the cache
+        // Return response
+        // If not in the cache, then return error page
+        return caches.open(CACHE).then(function (cache) {
+          cache.match(event.request).then(function (matching) {
             let report =
               !matching || matching.status == 404
                 ? Promise.reject("no-match")
                 : matching;
             return report;
           });
-        })
-    })
-  );
+        });
+      })
+  )
 });
