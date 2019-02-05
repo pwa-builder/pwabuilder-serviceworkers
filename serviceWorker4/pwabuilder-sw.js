@@ -64,7 +64,7 @@ function fromCache(request) {
   // Return response
   // If not in the cache, then return error page
   return caches.open(CACHE).then(function (cache) {
-    cache.match(request).then(function (matching) {
+    return cache.match(request).then(function (matching) {
       return !matching || matching.status == 404
         ? Promise.reject("no-match")
         : matching;

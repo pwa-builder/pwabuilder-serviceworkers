@@ -39,7 +39,7 @@ function fromCache(request) {
   // Return response
   // If not in the cache, then return the offline page
   return caches.open(CACHE).then(function (cache) {
-    cache.match(request).then(function (matching) {
+    return cache.match(request).then(function (matching) {
       return !matching || matching.status == 404
         ? cache.match(offlinePage)
         : matching;
