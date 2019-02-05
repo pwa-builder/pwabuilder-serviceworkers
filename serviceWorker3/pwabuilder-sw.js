@@ -1,6 +1,6 @@
 // This is the service worker with the combined offline experience (Offline page + Offline copy of pages)
 
-const CACHE = "pwabuilder-offline";
+const CACHE = "pwabuilder-offline-page";
 const offlinePage = "offline.html";
 
 // Install stage sets up the offline page in the cache and opens a new cache
