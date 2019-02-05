@@ -23,30 +23,32 @@ self.addEventListener("fetch", function (event) {
         console.log("[PWA Builder] add page to offline cache: " + response.url);
 
         // If request was success, add or update it in the cache
-        const responseClone = response.clone();
-        event.waitUntil(
-          caches.open(CACHE).then(function (cache) {
-            return cache.put(request, responseClone);
-          })
-        );
-        
+        event.waitUntil(updateCache(event.request, response.clone()));
+
         return response;
       })
       .catch(function (error) {
         console.log("[PWA Builder] Network request Failed. Serving content from cache: " + error);
-
-        // Check to see if you have it in the cache
-        // Return response
-        // If not in the cache, then return error page
-        return caches.open(CACHE).then(function (cache) {
-          cache.match(event.request).then(function (matching) {
-            let report =
-              !matching || matching.status == 404
-                ? Promise.reject("no-match")
-                : matching;
-            return report;
-          });
-        });
+        return fromCache(event.request);
       })
   )
 });
+
+function fromCache(request) {
+  // Check to see if you have it in the cache
+  // Return response
+  // If not in the cache, then return error page
+  return caches.open(CACHE).then(function (cache) {
+    cache.match(event.request).then(function (matching) {
+      return !matching || matching.status == 404
+        ? Promise.reject("no-match")
+        : matching;;
+    });
+  });
+}
+
+function updateCache(request, response) {
+  return caches.open(CACHE).then(function (cache) {
+    return cache.put(request, response);
+  });
+}
