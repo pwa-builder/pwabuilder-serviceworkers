@@ -8,6 +8,7 @@ const offlineFallbackPage = "offline.html";
 
 const networkFirstPaths = [
   /* Add an array of regex of paths that should go network first */
+  // Example: /\/api\/.*/
 ];
 
 function pathComparer(requestUrl, pathRegEx) {
@@ -52,7 +53,7 @@ self.addEventListener("activate", function (event) {
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
-  if (compareNetworkFirstPaths(event.request)) {
+  if (compareNetworkFirstPaths(event.request.url)) {
     networkFirstFetch(event);
   } else {
     cacheFirstFetch(event);
@@ -60,32 +61,40 @@ self.addEventListener("fetch", function (event) {
 });
 
 function cacheFirstFetch(event) {
-  fromCache(event.request).then(function (response) {
-    // The response was found in the cache so we responde with it and update the entry
-    event.respondWith(response);
-    // This is where we call the server to get the newest version of the
-    // file to use the next time we show view
-    event.waitUntil(fetch(event.request).then(function (response) {
-      updateCache(event.request, response);
-    }));
-  }, function () {
-    // The response was not found in the cache so we look for it on the server
-    fetch(event.request)
-      .then(function (response) {
-        event.respondWith(response.clone());
-        // If request was success, add or update it in the cache
-        event.waitUntil(function (response) {
-          updateCache(event.request, response);
-        });
-      })
-      .catch(function (error) {
-        console.log("[PWA Builder] Network request failed and no cache." + error);
-        // Use the precached offline page as fallback
-        return caches.open(CACHE).then(function (cache) {
-          cache.match(offlinePage);
-        });
-      });
-  });
+  event.respondWith(
+    fromCache(event.request).then(
+      function (response) {
+        // The response was found in the cache so we responde with it and update the entry
+
+        // This is where we call the server to get the newest version of the
+        // file to use the next time we show view
+        event.waitUntil(
+          fetch(event.request).then(function (response) {
+            return updateCache(event.request, response);
+          })
+        );
+
+        return response;
+      },
+      function () {
+        // The response was not found in the cache so we look for it on the server
+        return fetch(event.request)
+          .then(function (response) {
+            // If request was success, add or update it in the cache
+            event.waitUntil(updateCache(event.request, response.clone()));
+
+            return response;
+          })
+          .catch(function (error) {
+            console.log("[PWA Builder] Network request failed and no cache." + error);
+            // Use the precached offline page as fallback
+            return caches.open(CACHE).then(function (cache) {
+              cache.match(offlinePage);
+            });
+          });
+      }
+    )
+  );
 }
 
 function networkFirstFetch(event) {
