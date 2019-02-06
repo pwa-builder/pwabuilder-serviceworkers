@@ -11,14 +11,19 @@ const networkFirstPaths = [
   // Example: /\/api\/.*/
 ];
 
+const avoidCachingPaths = [
+  /* Add an array of regex of paths that shouldn't be cached */
+  // Example: /\/api\/.*/
+];
+
 function pathComparer(requestUrl, pathRegEx) {
   return requestUrl.match(new RegExp(pathRegEx));
 }
 
-function compareNetworkFirstPaths(requestUrl) {
+function comparePaths(requestUrl, pathsArray) {
   if (requestUrl) {
-    for (let index = 0; index < networkFirstPaths.length; index++) {
-      const pathRegEx = networkFirstPaths[index];
+    for (let index = 0; index < pathsArray.length; index++) {
+      const pathRegEx = pathsArray[index];
       if (pathComparer(requestUrl, pathRegEx)) {
         return true;
       }
@@ -53,7 +58,7 @@ self.addEventListener("activate", function (event) {
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
-  if (compareNetworkFirstPaths(event.request.url)) {
+  if (comparePaths(event.request.url, networkFirstPaths)) {
     networkFirstFetch(event);
   } else {
     cacheFirstFetch(event);
@@ -89,7 +94,7 @@ function cacheFirstFetch(event) {
             console.log("[PWA Builder] Network request failed and no cache." + error);
             // Use the precached offline page as fallback
             return caches.open(CACHE).then(function (cache) {
-              cache.match(offlinePage);
+              cache.match(offlineFallbackPage);
             });
           });
       }
@@ -100,7 +105,6 @@ function cacheFirstFetch(event) {
 function networkFirstFetch(event) {
   event.respondWith(fetch(event.request)
     .then(function (response) {
-      console.log("[PWA Builder] add page to offline cache: " + response.url);
       // If request was success, add or update it in the cache
       event.waitUntil(updateCache(event.request, response.clone()));
       return response;
@@ -125,7 +129,11 @@ function fromCache(request) {
 }
 
 function updateCache(request, response) {
-  return caches.open(CACHE).then(function (cache) {
-    return cache.put(request, response);
-  });
+  if (!comparePaths(request.url, avoidCachingPaths)) {
+    return caches.open(CACHE).then(function (cache) {
+      return cache.put(request, response);
+    });
+  }
+
+  return Promise.resolve();
 }
