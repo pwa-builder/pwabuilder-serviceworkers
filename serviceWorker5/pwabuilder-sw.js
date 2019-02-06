@@ -1,6 +1,6 @@
 //This is the service worker with the Advance pre-cache
 
-const CACHE = 'pwabuilder-adv-cache';
+const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
   /* Add an array of files to precache for your app */
 ];
@@ -42,10 +42,9 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Caching pages during install");
-      return cache.add(offlineFallbackPage)
-        .then(function () { 
-          return cache.addAll(precacheFiles);
-        });
+      return cache.add(offlineFallbackPage).then(function () {
+        return cache.addAll(precacheFiles);
+      });
     })
   );
 });
@@ -103,16 +102,18 @@ function cacheFirstFetch(event) {
 }
 
 function networkFirstFetch(event) {
-  event.respondWith(fetch(event.request)
-    .then(function (response) {
-      // If request was success, add or update it in the cache
-      event.waitUntil(updateCache(event.request, response.clone()));
-      return response;
-    })
-    .catch(function (error) {
-      console.log("[PWA Builder] Network request Failed. Serving content from cache: " + error);
-      return fromCache(event.request);
-    }));
+  event.respondWith(
+    fetch(event.request)
+      .then(function (response) {
+        // If request was success, add or update it in the cache
+        event.waitUntil(updateCache(event.request, response.clone()));
+        return response;
+      })
+      .catch(function (error) {
+        console.log("[PWA Builder] Network request Failed. Serving content from cache: " + error);
+        return fromCache(event.request);
+      })
+  );
 }
 
 function fromCache(request) {

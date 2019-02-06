@@ -34,9 +34,11 @@ self.addEventListener("fetch", function (event) {
 
         // This is where we call the server to get the newest version of the
         // file to use the next time we show view
-        event.waitUntil(fetch(event.request).then(function (response) {
-          return updateCache(event.request, response);
-        }));
+        event.waitUntil(
+          fetch(event.request).then(function (response) {
+            return updateCache(event.request, response);
+          })
+        );
 
         return response;
       },
