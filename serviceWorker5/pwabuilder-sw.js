@@ -57,7 +57,7 @@ self.addEventListener("activate", function (event) {
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
-  if (event.request.method !== 'GET') return;
+  if (event.request.method !== "GET") return;
 
   if (comparePaths(event.request.url, networkFirstPaths)) {
     networkFirstFetch(event);
@@ -92,6 +92,11 @@ function cacheFirstFetch(event) {
             return response;
           })
           .catch(function (error) {
+            // The following validates that the request was for a navigation to a new document
+            if (event.request.destination !== "document" || event.request.mode !== "navigate") {
+              return;
+            }
+
             console.log("[PWA Builder] Network request failed and no cache." + error);
             // Use the precached offline page as fallback
             return caches.open(CACHE).then(function (cache) {
@@ -124,9 +129,11 @@ function fromCache(request) {
   // If not in the cache, then return error page
   return caches.open(CACHE).then(function (cache) {
     return cache.match(request).then(function (matching) {
-      return !matching || matching.status == 404
-        ? Promise.reject("no-match")
-        : matching;
+      if (!matching || matching.status === 404) {
+        return Promise.reject("no-match");
+      }
+
+      return matching;
     });
   });
 }

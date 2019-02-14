@@ -17,7 +17,7 @@ self.addEventListener("install", function (event) {
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
-  if (event.request.method !== 'GET') return;
+  if (event.request.method !== "GET") return;
 
   event.respondWith(
     fetch(event.request)
@@ -42,9 +42,16 @@ function fromCache(request) {
   // If not in the cache, then return the offline page
   return caches.open(CACHE).then(function (cache) {
     return cache.match(request).then(function (matching) {
-      return !matching || matching.status == 404
-        ? cache.match(offlinePage)
-        : matching;
+      if (!matching || matching.status === 404) {
+        // The following validates that the request was for a navigation to a new document
+        if (request.destination !== "document" || request.mode !== "navigate") {
+          return Promise.reject("no-match");
+        }
+
+        return cache.match(offlinePage);
+      }
+
+      return matching;
     });
   });
 }
