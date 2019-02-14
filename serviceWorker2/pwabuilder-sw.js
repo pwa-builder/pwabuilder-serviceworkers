@@ -1,7 +1,7 @@
 // This is the "Offline copy of pages" service worker
 
 const CACHE = "pwabuilder-offline";
-const offlinePage = "index.html";
+const offlineFallbackPage = "index.html";
 
 // Install stage sets up the index page (home page) in the cache and opens a new cache
 self.addEventListener("install", function (event) {
@@ -10,7 +10,7 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Cached offline page during install");
-      return cache.add(offlinePage);
+      return cache.add(offlineFallbackPage);
     })
   );
 });

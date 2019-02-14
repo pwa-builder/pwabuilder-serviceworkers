@@ -1,7 +1,7 @@
 // This is the service worker with the combined offline experience (Offline page + Offline copy of pages)
 
 const CACHE = "pwabuilder-offline-page";
-const offlinePage = "offline.html";
+const offlineFallbackPage = "offline.html";
 
 // Install stage sets up the offline page in the cache and opens a new cache
 self.addEventListener("install", function (event) {
@@ -10,7 +10,7 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Cached offline page during install");
-      return cache.add(offlinePage);
+      return cache.add(offlineFallbackPage);
     })
   );
 });
@@ -48,7 +48,7 @@ function fromCache(request) {
           return Promise.reject("no-match");
         }
 
-        return cache.match(offlinePage);
+        return cache.match(offlineFallbackPage);
       }
 
       return matching;
