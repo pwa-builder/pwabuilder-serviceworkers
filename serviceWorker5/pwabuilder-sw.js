@@ -4,7 +4,9 @@ const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
   /* Add an array of files to precache for your app */
 ];
-const offlineFallbackPage = "offline.html";
+
+// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
+const offlineFallbackPage = "ToDo-replace-this-name.html";
 
 const networkFirstPaths = [
   /* Add an array of regex of paths that should go network first */
@@ -42,8 +44,13 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Caching pages during install");
-      return cache.add(offlineFallbackPage).then(function () {
-        return cache.addAll(precacheFiles);
+
+      return cache.addAll(precacheFiles).then(function () {
+        if (offlineFallbackPage === "ToDo-replace-this-name.html") {
+          return cache.add(new Response("TODO: Update the value of the offlineFallbackPage constant in the serviceworker."));
+        }
+
+        return cache.add(offlineFallbackPage);
       });
     })
   );
