@@ -1,7 +1,9 @@
 // This is the service worker with the combined offline experience (Offline page + Offline copy of pages)
 
 const CACHE = "pwabuilder-offline-page";
-const offlinePage = "offline.html";
+
+// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
+const offlineFallbackPage = "ToDo-replace-this-name.html";
 
 // Install stage sets up the offline page in the cache and opens a new cache
 self.addEventListener("install", function (event) {
@@ -10,13 +12,20 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Cached offline page during install");
-      return cache.add(offlinePage);
+      
+      if (offlineFallbackPage === "ToDo-replace-this-name.html") {
+        return cache.add(new Response("TODO: Update the value of the offlineFallbackPage constant in the serviceworker."));
+      }
+      
+      return cache.add(offlineFallbackPage);
     })
   );
 });
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
     fetch(event.request)
       .then(function (response) {
@@ -40,9 +49,16 @@ function fromCache(request) {
   // If not in the cache, then return the offline page
   return caches.open(CACHE).then(function (cache) {
     return cache.match(request).then(function (matching) {
-      return !matching || matching.status == 404
-        ? cache.match(offlinePage)
-        : matching;
+      if (!matching || matching.status === 404) {
+        // The following validates that the request was for a navigation to a new document
+        if (request.destination !== "document" || request.mode !== "navigate") {
+          return Promise.reject("no-match");
+        }
+
+        return cache.match(offlineFallbackPage);
+      }
+
+      return matching;
     });
   });
 }

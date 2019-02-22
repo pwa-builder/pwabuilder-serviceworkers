@@ -26,7 +26,9 @@ self.addEventListener("activate", function (event) {
 });
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
-self.addEventListener("fetch", function (event) {
+self.addEventListener("fetch", function (event) { 
+  if (event.request.method !== "GET") return;
+
   event.respondWith(
     fromCache(event.request).then(
       function (response) {
@@ -53,7 +55,6 @@ self.addEventListener("fetch", function (event) {
           })
           .catch(function (error) {
             console.log("[PWA Builder] Network request failed and no cache." + error);
-            return Promise.reject("no-match");
           });
       }
     )
@@ -63,12 +64,14 @@ self.addEventListener("fetch", function (event) {
 function fromCache(request) {
   // Check to see if you have it in the cache
   // Return response
-  // If not in the cache, then return error page
+  // If not in the cache, then return
   return caches.open(CACHE).then(function (cache) {
     return cache.match(request).then(function (matching) {
-      return !matching || matching.status == 404
-        ? Promise.reject("no-match")
-        : matching;
+      if (!matching || matching.status === 404) {
+        return Promise.reject("no-match");
+      }
+
+      return matching;
     });
   });
 }

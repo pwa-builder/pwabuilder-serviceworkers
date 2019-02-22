@@ -4,7 +4,9 @@ const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
   /* Add an array of files to precache for your app */
 ];
-const offlineFallbackPage = "offline.html";
+
+// TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
+const offlineFallbackPage = "ToDo-replace-this-name.html";
 
 const networkFirstPaths = [
   /* Add an array of regex of paths that should go network first */
@@ -42,8 +44,13 @@ self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE).then(function (cache) {
       console.log("[PWA Builder] Caching pages during install");
-      return cache.add(offlineFallbackPage).then(function () {
-        return cache.addAll(precacheFiles);
+
+      return cache.addAll(precacheFiles).then(function () {
+        if (offlineFallbackPage === "ToDo-replace-this-name.html") {
+          return cache.add(new Response("TODO: Update the value of the offlineFallbackPage constant in the serviceworker."));
+        }
+
+        return cache.add(offlineFallbackPage);
       });
     })
   );
@@ -57,6 +64,8 @@ self.addEventListener("activate", function (event) {
 
 // If any fetch fails, it will look for the request in the cache and serve it from there first
 self.addEventListener("fetch", function (event) {
+  if (event.request.method !== "GET") return;
+
   if (comparePaths(event.request.url, networkFirstPaths)) {
     networkFirstFetch(event);
   } else {
@@ -90,6 +99,11 @@ function cacheFirstFetch(event) {
             return response;
           })
           .catch(function (error) {
+            // The following validates that the request was for a navigation to a new document
+            if (event.request.destination !== "document" || event.request.mode !== "navigate") {
+              return;
+            }
+
             console.log("[PWA Builder] Network request failed and no cache." + error);
             // Use the precached offline page as fallback
             return caches.open(CACHE).then(function (cache) {
@@ -122,9 +136,11 @@ function fromCache(request) {
   // If not in the cache, then return error page
   return caches.open(CACHE).then(function (cache) {
     return cache.match(request).then(function (matching) {
-      return !matching || matching.status == 404
-        ? Promise.reject("no-match")
-        : matching;
+      if (!matching || matching.status === 404) {
+        return Promise.reject("no-match");
+      }
+
+      return matching;
     });
   });
 }
