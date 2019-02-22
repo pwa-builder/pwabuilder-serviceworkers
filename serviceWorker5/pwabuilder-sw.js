@@ -1,4 +1,4 @@
-//This is the service worker with the Advance pre-cache
+//This is the service worker with the Advanced caching
 
 const CACHE = "pwabuilder-adv-cache";
 const precacheFiles = [
