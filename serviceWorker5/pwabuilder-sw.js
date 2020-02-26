@@ -13,12 +13,26 @@ const networkFirstPaths = [
   // Example: /\/api\/.*/
 ];
 
+const networkOnlyPaths = [
+  /* Add an array of regex of paths that should always come from the network */
+  // Example: /\/api\/.*/
+]
+
 workbox.precaching.precacheAndRoute(precacheFiles);
 
 networkFirstPaths.forEach((path) => {
   workbox.routing.registerRoute(
     new RegExp(path),
     new workbox.strategies.NetworkFirst({
+      cacheName: CACHE
+    })
+  );
+});
+
+networkOnlyPaths.forEach((path) => {
+  workbox.routing.registerRoute(
+    new RegExp(path),
+    new workbox.strategies.NetworkOnly({
       cacheName: CACHE
     })
   );
