@@ -5,6 +5,12 @@ const CACHE = "pwabuilder-offline-page";
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
 const offlineFallbackPage = "ToDo-replace-this-name.html";
 
+self.addEventListener("message", ({ data }) => {
+  if (data === "forceUpdate") {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('install', async (event) => {
   event.waitUntil(
     caches.open(CACHE)
