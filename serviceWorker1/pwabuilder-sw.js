@@ -7,8 +7,8 @@ const CACHE = "pwabuilder-page";
 // TODO: replace the following with the correct offline fallback page i.e.: const offlineFallbackPage = "offline.html";
 const offlineFallbackPage = "ToDo-replace-this-name.html";
 
-self.addEventListener("message", ({ data }) => {
-  if (data === "forceUpdate") {
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
     self.skipWaiting();
   }
 });
