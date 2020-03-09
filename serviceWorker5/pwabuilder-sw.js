@@ -10,10 +10,6 @@ self.addEventListener("message", (event) => {
   }
 });
 
-const precacheFiles = [
-  /* Add an array of files to precache for your app */
-];
-
 const networkFirstPaths = [
   /* Add an array of regex of paths that should go network first */
   // Example: /\/api\/.*/
@@ -23,8 +19,6 @@ const networkOnlyPaths = [
   /* Add an array of regex of paths that should always come from the network */
   // Example: /\/api\/.*/
 ]
-
-workbox.precaching.precacheAndRoute(precacheFiles);
 
 networkFirstPaths.forEach((path) => {
   workbox.routing.registerRoute(
