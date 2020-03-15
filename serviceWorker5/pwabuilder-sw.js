@@ -2,7 +2,11 @@
 
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/5.0.0/workbox-sw.js');
 
-const CACHE = "pwabuilder-adv-cache";
+const HTML_CACHE = "html";
+const JS_CACHE = "javascript";
+const STYLE_CACHE = "stylesheets";
+const IMAGE_CACHE = "images";
+const FONT_CACHE = "fonts";
 
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SKIP_WAITING") {
@@ -10,32 +14,65 @@ self.addEventListener("message", (event) => {
   }
 });
 
-const networkFirstPaths = [
-  /* Add an array of regex of paths that should go network first */
-  // Example: /\/api\/.*/
-];
+workbox.routing.registerRoute(
+  ({event}) => event.request.destination === 'document',
+  new workbox.strategies.NetworkFirst({
+    cacheName: HTML_CACHE,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 10,
+      }),
+    ],
+  })
+);
 
-const networkOnlyPaths = [
-  /* Add an array of regex of paths that should always come from the network */
-  // Example: /\/api\/.*/
-]
+workbox.routing.registerRoute(
+  ({event}) => event.request.destination === 'script',
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: JS_CACHE,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 15,
+      }),
+    ],
+  })
+);
 
-networkFirstPaths.forEach((path) => {
-  workbox.routing.registerRoute(
-    new RegExp(path),
-    new workbox.strategies.NetworkFirst({
-      cacheName: CACHE
-    })
-  );
-});
+workbox.routing.registerRoute(
+  ({event}) => event.request.destination === 'style',
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: STYLE_CACHE,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 15,
+      }),
+    ],
+  })
+);
 
-networkOnlyPaths.forEach((path) => {
-  workbox.routing.registerRoute(
-    new RegExp(path),
-    new workbox.strategies.NetworkOnly({
-      cacheName: CACHE
-    })
-  );
-});
+workbox.routing.registerRoute(
+  ({event}) => event.request.destination === 'image',
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: IMAGE_CACHE,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 15,
+      }),
+    ],
+  })
+);
+
+workbox.routing.registerRoute(
+  ({event}) => event.request.destination === 'font',
+  new workbox.strategies.StaleWhileRevalidate({
+    cacheName: FONT_CACHE,
+    plugins: [
+      new workbox.expiration.ExpirationPlugin({
+        maxEntries: 15,
+      }),
+    ],
+  })
+);
+
 
 
