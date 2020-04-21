@@ -24,6 +24,16 @@
       "id": 5,
       "description": "Use this service worker to improve the performance of your app, and make it work offline. The advanced caching service worker allows you to configure files and routes that are cached in different manners (pre-cache, server first, cache first, etc.). The tool can be used to build a lightening fast app (even for dynamic content) that works offline.",
       "title": "Advanced caching"
+    },
+    {
+      "id": 6,
+      "description": "Use this service worker to implement background sync for your app, ensuring that crucial requests made while the app is offline can be replayed when the user comes back online.",
+      "title": "Background Sync"
+    },
+    {
+      "id": 7,
+      "description": "Use this service worker to play back audio and video to the user that has been cached for offline play.",
+      "title": "Serving Cached media"
     }
   ]
 }
