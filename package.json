@@ -1,6 +1,6 @@
 {
   "name": "pwabuilder-serviceworkers",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "PWA Builder Core Library",
   "repository": {
     "type": "git",
