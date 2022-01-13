@@ -1,3 +1,5 @@
+Please use our [main repository for any issues/bugs/features suggestion](https://github.com/pwa-builder/PWABuilder/issues/new/choose).
+
 # Service Workers
 
 In this repository you will find sample code of service workers implementing the following features:
